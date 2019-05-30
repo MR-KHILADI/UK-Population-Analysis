@@ -2335,7 +2335,7 @@ print(out_geo)
 3. Lower 2013 populations of over 65 age people  in these regions
 4. Change of the Jurisdiction and thus those over 65 aged people are accounted in other regions
 5. Massive Death Rates (Very unlikely)
-6. 
+
 ```
 
 
