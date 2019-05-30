@@ -15,7 +15,7 @@ import seaborn as sns
 from scipy.stats import zscore
 import copy
 from scipy.stats import ttest_ind
-import copy
+from PIL import Image
 ```
 
 ## Data Parsing and Cleaning
@@ -133,7 +133,7 @@ Action Strategy to rectify this outliers:
 
 3. If we do not seperate the layers of data out, we will have unreliable statistic (z-scores, t-scores)
 
-I will demonstrate the above strategy by analysing each country  of United Kingdom
+I will demonstrate the above strategy by analysing each country of United Kingdom
 ```
 
 
@@ -155,12 +155,15 @@ Grouped_Countries=df[df['Geography code'].astype(str).str[0]=='K']
 
 ```python
 Scotland.groupby(['Geography']).sum().shape 
+
+Output: (32, 4)
+
 ```
 
 
 
 
-    (32, 4)
+    
 
 
 
@@ -171,14 +174,11 @@ Scotland.groupby(['Geography']).sum().shape
 Shape of 32 here validates that Scotland has 32 councils
 ```
 
+#### Box Plot for Population Distribution grouped by Geography for every year
+
 ```python
 Scotland[(Scotland['Sex']=='All') ].groupby(['Geography']).sum().plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5befd3da0>
 
 
 
@@ -233,17 +233,11 @@ Other dots outside box plots indicate abnormality under tolerance. It is obvious
 
 ### Analysis For Northern Ireland
 
-
+#### Box Plot for Population Distribution grouped by Geography for every year
 
 ```python
 Northern_Ireland[(Northern_Ireland['Sex']=='All') ].groupby(['Geography']).sum().plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5ba10dda0>
-
 
 
 
@@ -289,9 +283,12 @@ print('\nAbnormally Populated N.I. Geography in 2016: \n' + str(temp1[(temp1['Z(
 
 #### Inference
 ```python
-The Numbers are unrealistic: Huge fluctuation for each of these geographical regions
-Reasons: Migration, Large Mortality Rate, Change in the jurisdications and calculations
-Other dots outside box plots indicate abnormality under tolerance. It is obvious sometimes because more population happens to stay in urban over rural settings.
+1. The Numbers are unrealistic: Huge fluctuation for each of these geographical regions
+
+2. Reasons can be: Migration, Large Mortality Rate, Change in the jurisdications and calculations
+
+3. Other dots outside box plots indicate abnormality under tolerance. 
+It is obvious sometimes because more population happens to stay in urban over rural settings.
 
 ```
 
@@ -300,18 +297,12 @@ Other dots outside box plots indicate abnormality under tolerance. It is obvious
 
 ### Analysis for Wales
 
+#### Box Plot for Population Distribution grouped by Geography for every year
 
 
 ```python
 Wales[(Wales['Geography']!='Wales') & (Wales['Sex']=='All') ].groupby(['Geography']).sum().plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5b7bbdfd0>
-
-
 
 
 ![png](output_20_1.png)
@@ -379,6 +370,7 @@ Reasons: Migration, Large Mortality Rate, Change in the jurisdications and calcu
 
 ### Analysis for England
 
+#### Box Plot for Population Distribution grouped by Geography for every year
 
 
 ```python
@@ -388,15 +380,10 @@ England[(England['Sex']=='All') ].groupby(['Geography']).sum().plot(kind='box')
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5b6a03b00>
-
-
-
-
 ![png](output_26_1.png)
 
 
-####I nference
+#### Inference
 ```python
 Gaps in the outliers here,indicate various layers of hierarchy or granularity in the England dataset
 ```
@@ -528,10 +515,8 @@ temp1[(temp1['Z(2013)']>=2.) | (temp1['Z(2013)']<=-2.)][['2013','2014','2015','2
 ```python
 Greater Manchester (A county) is more populated than other pre-layered regions of England
 ```
-```python
-
 #### Action: Separate this sub-regions out.
-
+```python
 England_sub=England[(England['Geography'].isin(england_parts)) &(England['Sex']=='All') ]
 England_new=England[~(England['Geography'].isin(england_parts))]
 England_new=England_new[England_new['Sex']=='All']
@@ -539,14 +524,12 @@ England_new=England_new[England_new['Sex']=='All']
 
 
 #### Analysing Seperated (Layer 2 and sub regions) Data for England
+
+##### Box Plot for Population Distribution grouped by Geography for every year: Layer 2
+
 ```python
 England_new.groupby('Geography').sum().plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5bb7433c8>
 
 
 
@@ -560,6 +543,8 @@ England_new.groupby('Geography').sum().plot(kind='box')
 Presence of Layer 2 
 ```
 
+#### Box Plot for Sub-Regions  (NUTS-Nomenclature of Territorial Units for Statistics) of England every year
+
 
 ```python
 England_sub.plot(kind='box')
@@ -569,7 +554,6 @@ England_sub.plot(kind='box')
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5b4d30b00>
 
 
 
@@ -579,22 +563,15 @@ England_sub.plot(kind='box')
 
 #### Inference and hypothesis:
 ```python
-The outliers here are because of "Age" Factor as  some regions have uneven population by age
+The outliers here exhibit "Age" Factor has uneven distributed across the sub-regions
+
 We can also hypothesize whether female-male ratio is abnormal
 ```
 
-
+##### Box Plot for England Sub regions grouped by Age, for each year
 ```python
 England_sub.groupby(['Age']).sum().plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5baee0470>
-
-
-
 
 ![png](output_37_1.png)
 
@@ -696,6 +673,8 @@ In the above diagram: It is apparent with negative z-score values less than -2, 
 
 #### Analysis for Layer 2 of England
 
+##### Box Plots for Layer 2 England Population DIstribution, Grouped by Geography
+
 ```python
 England_new.groupby('Geography').sum().plot(kind='box')
 
@@ -704,7 +683,7 @@ England_new.groupby('Geography').sum().plot(kind='box')
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5ba587048>
+
 
 
 
@@ -714,7 +693,7 @@ England_new.groupby('Geography').sum().plot(kind='box')
 
 #### Inference
 ```python
-Again,Here outliers indicates one more layer of aggregration present in Data
+Again,Here outliers indicates one more layer of aggregration present in Data.
 ```
 
 
@@ -728,7 +707,6 @@ temp1=pd.merge(temp1,temp2,on='Geography')
 temp1[(temp1['Z(2013)']>=3.) | (temp1['Z(2013)']<=-3.)][['2013','2014','2015','2016']].sort_values(by=['2013'],ascending=False)
 
 ```
-
 
 
 
@@ -924,6 +902,8 @@ Greater Manchester and West Yorkshire are abnormally populous counties over othe
 
 #### Analysing Counties
 
+##### Box plots for population distribution across england counties for each year
+
 ```python
 England_counties_df.groupby('Age').sum().plot(kind='box')
 ```
@@ -1039,16 +1019,11 @@ temp[(temp['2013']>2.) | (temp['2013']<-2.)]
 #### Analysing Layer 3 England
 
 
-
+##### Box plot for Population Distribution across Layer 3  for England grouped by Geography.
 ```python
 England_new_df=England_new[~England_new['Geography'].isin(England_counties)]
 England_new_df.groupby('Geography').sum().plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5bb157748>
 
 
 
@@ -1156,13 +1131,6 @@ England_new_df_1.groupby('Geography').sum().plot(kind='box')
 ```
 
 
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5b4b8b2e8>
-
-
-
-
 ![png](output_54_1.png)
 
 
@@ -1252,7 +1220,7 @@ temp[(temp['2013']>3.) | (temp['2013']<-3.)]
 There are no outliers now, which reduces the data to its most granular form
 However, It is so obvious, that certain cities like birmingham, leeds etc are more populated then others
 ```
-#### Hypothise Age group abnormality:
+#### Hypothizing Age group abnormality:
 
 ```python
 temp=England_counties_df.groupby(['Age']).sum().apply(zscore)
@@ -1386,7 +1354,7 @@ print("\n2016: Smallest Total Population:\n" + str(temp.sort_values(by=['2016'],
     isles of scilly All  2251  2280  2324  2308
     
 
-#### Geography with Smallest Population for all the years :Isles of Scilly
+#### Geography with Smallest Population for all the years: Isles of Scilly
 
 
 ```python
@@ -1490,7 +1458,7 @@ print('Geography with Most M-F Change: \n'+ str(ratio_df.sort_values('per_change
 
 
 ```python
------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 ```
 
 
@@ -1501,7 +1469,6 @@ print('Geography with Most M-F Change: \n'+ str(ratio_df.sort_values('per_change
 Ploting the data using Tableau and Importing the Image
 You can find the tableau worksheet attached
 
-from PIL import Image
 jpgfile = Image.open("Age Distribution.png")
 jpgfile
 ```
@@ -1512,7 +1479,7 @@ jpgfile
 
 
 
-## Inferece: 
+## Inference: 
 
 ```python
 This Plot is based on data after filtering in only records with Geography = 'United Kingdom'
@@ -2135,7 +2102,7 @@ q4
 </div>
 
 
-### Validation Normality Assumptions
+### Validation Normality Assumptions using Probability Plots.
 
 ```python
 from scipy import stats
@@ -2154,29 +2121,25 @@ f4=stats.probplot(over_65_by_under_65[~over_65_by_under_65.index.isin(out_geo)][
 ```python
 #### Inference:
 
-The regions above have abnormally higher or lower over-65 age group proportions
-Also, The normality assumption is followed, for rest of the geographies when outliers filtered out
+The regions above have abnormally higher or lower over-65 age group proportions.
+
+Also, The normality assumption is followed, for rest of the geographies when outliers filtered out.
 ```
 
     
 
-##### Creating columns for percentage change across years and between 2013 and 2016
+##### Creating columns for percentage change across years and between 2013 and 2016 
+###### Box Plots for Distribution of year to year changes.
 
 ```python
+
 over_65_by_under_65['13_14']=abs(((over_65_by_under_65['2014']-over_65_by_under_65['2013'])/over_65_by_under_65['2013'])*100)
 over_65_by_under_65['14_15']=abs(((over_65_by_under_65['2015']-over_65_by_under_65['2014'])/over_65_by_under_65['2014'])*100)
 over_65_by_under_65['15_16']=abs(((over_65_by_under_65['2016']-over_65_by_under_65['2015'])/over_65_by_under_65['2015'])*100)
 over_65_by_under_65['13_16']=abs(((over_65_by_under_65['2016']-over_65_by_under_65['2013'])/over_65_by_under_65['2013'])*100)
 over_65_by_under_65[['13_16','14_15','15_16','13_16']].plot(kind='box')
+
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5c327f7f0>
-
-
-
 
 ![png](output_89_1.png)
 
@@ -2189,10 +2152,6 @@ over_65_by_under_65[['13_16','14_15','15_16','13_16']].plot(kind='box')
 
 ```python
 temp=over_65_by_under_65.apply(zscore)
-```
-
-
-```python
 print(temp.abs().sort_values('13_16',ascending=False).head(1))
 
 ```
@@ -2209,12 +2168,12 @@ print(temp.abs().sort_values('13_16',ascending=False).head(1))
 #### Inference
 ```python
 1. Highland shows the highest change in over 65 proportion between 2013 and 2016
-2.  Numbers are unrealistic
-3. The over_65 proportion change by from 1.1177 to 0.387257
+2. Numbers are unrealistic
+3. The over_65 proportion change by from 1.1177 to 0.387257 (Highly Unlikely)
 ```
 
 ```python
-### Lets focus on percentage change of Over-65 Age group proportion between 2013 and 2014
+### Now, For percentage change of Over-65 Age group proportion between 2013 and 2014
 ```
 
 ```python
@@ -2231,7 +2190,6 @@ print(temp.abs().sort_values('13_14',ascending=False).head(1))
     
 
 
-
 #### Inference
 ```python
 1. Newry,mourne and down shows the highest change in over 65 proportion between 2013 and 2014
@@ -2240,7 +2198,7 @@ print(temp.abs().sort_values('13_14',ascending=False).head(1))
 ```
 
 
-### Lets focus on percentage change of Over-65 Age group proportion between 2014 and 2015
+### Similarly, For percentage change of Over-65 Age group proportion between 2014 and 2015
 
 ```python
 print(temp.abs().sort_values('14_15',ascending=False).head(1))
@@ -2257,13 +2215,13 @@ print(temp.abs().sort_values('14_15',ascending=False).head(1))
 
 #### Inference
 ```python
-Highland shows the highest change in over 65 proportion between 2013 and 2014
-Numbers are unrealistic
-The over_65 proportion change by from 1.1791 to 0.366
+1.Highland shows the highest change in over 65 proportion between 2013 and 2014
+2. Numbers are unrealistic
+3. The over_65 proportion change by from 1.1791 to 0.366
 ```
 
 
-### Lets focus on percentage change of Over-65 Age group proportion between 2015 and 2016
+### Lastly, For percentage change of Over-65 Age group proportion between 2015 and 2016
 
 ```python
 print(temp.abs().sort_values('15_16',ascending=False).head(1))
@@ -2285,28 +2243,18 @@ print(temp.abs().sort_values('15_16',ascending=False).head(1))
 ```
 
 
-### Lets Find outliers for over 65 ratio between 2013 and 2016
+### Finding outliers for over 65 ratio change between 2013 and 2016
 
 
 ```python
 out_geo=temp[(temp['13_16']>2.0 )|(temp['13_16']<-2.0)].sort_values(by='13_16',ascending=True).index.tolist()
 ```
-
+#### Box Plot for over 65 ratio change on filtered data after removing outliers.
 
 ```python
 over_65_by_under_65[~over_65_by_under_65.index.isin(out_geo)]['13_16'].plot(kind='box')
 ```
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1e5c4433748>
-
-
-
-
 ![png](output_103_1.png)
-
 
 ##### Validating Normality assumption
 ```python
@@ -2318,7 +2266,7 @@ fig=stats.probplot(over_65_by_under_65[~over_65_by_under_65.index.isin(out_geo)]
 ![png](output_104_0.png)
 
 
-##### with respect to change in over 65 ratio between 2013 and 2016, this regions have abnormal changes in the ratio
+##### With respect to change in over 65 ratio between 2013 and 2016, this regions have abnormal changes in the ratio
 
 ```python
 print(out_geo)
@@ -2338,17 +2286,16 @@ print(out_geo)
 
 ```
 
+##### We can hypothesize whether at all across UK, there is difference in 0ver 65 ratio
 
 ```python
 stats.ttest_rel(over_65_by_under_65['2013'], over_65_by_under_65['2016'])
 ```
-
-
-
-
     Ttest_relResult(statistic=-20.860795521810466, pvalue=1.2974012240176814e-67)
 
 
 
 
-###### There is a statistically significant change in over-65 proportion, between 2013 and 2016, across UK.
+##### Based on the p-value below 0.05, we can say with 95% confidence that there is a statistically significant change in over-65 proportion, between 2013 and 2016, across UK.
+
+
