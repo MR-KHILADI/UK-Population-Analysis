@@ -71,9 +71,6 @@ print('Descriptive Statistics: \n'+ str(df.describe()))
     51901   16-63  
     Last 3 Records sorted by "2013": 
     
-    
-     
-    
                  Geography Geography code Age  Sex    2013    2014    2015  \
     106599  united kingdom      K02000001  48  All  946543  938073  938658   
     106593  united kingdom      K02000001  46  All  938474  925281  925304   
